@@ -1,5 +1,7 @@
 #📦Ecommerce-data-pipeline-ssms Project
 
+This project is a hands-on learning initiative focused on building a modern data warehouse using Pandas and T-SQL. Its goal is to progressively expand my expertise in essential data concepts, including ELT workflows, DataFrame operations, data architecture design, and analytical methodologies.
+
 #🗂️ Data Source 
 
  Brazilian E-Commerce Public Dataset by Olist:
