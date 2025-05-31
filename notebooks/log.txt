@@ -1,0 +1,10 @@
+2025-05-31T13:22:11 Loaded customers table to bronze schema. Load duration: 2.32379 sec.
+2025-05-31T13:22:12 Loaded order_payments table to bronze schema. Load duration: 1.616262 sec.
+2025-05-31T13:22:28 Loaded geolocation table to bronze schema. Load duration: 15.94987 sec.
+2025-05-31T13:22:31 Loaded order_items table to bronze schema. Load duration: 2.407145 sec.
+2025-05-31T13:22:32 Loaded order_payments table to bronze schema. Load duration: 1.662077 sec.
+2025-05-31T13:22:55 Loaded order_reviews table to bronze schema. Load duration: 22.480493 sec.
+2025-05-31T13:23:21 Loaded orders table to bronze schema. Load duration: 26.404436 sec.
+2025-05-31T13:23:31 Loaded products table to bronze schema. Load duration: 9.615751 sec.
+2025-05-31T13:23:32 Loaded sellers table to bronze schema. Load duration: 0.690408 sec.
+2025-05-31T13:23:32 Loaded category_name_transactions table to bronze schema. Load duration: 0.068377 sec.
