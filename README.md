@@ -2,7 +2,9 @@
 
 #🗂️ Data Source 
 
-    👉 Brazilian E-Commerce Public Dataset by Olist https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce?select=product_category_name_translation.csv
+    - Brazilian E-Commerce Public Dataset by Olist
+
+    https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce?select=product_category_name_translation.csv
 
 
 #🛠️ Tools & Environment:
