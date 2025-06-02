@@ -66,7 +66,7 @@ CREATE TABLE silver.order_items (
     order_item_pk INT IDENTITY(1,1) PRIMARY KEY,
     order_id VARCHAR(50) REFERENCES silver.orders(order_id),
     order_item_id INT,
-    product_id VARCHAR(50) REFERENCES silver.products(product_id),
+    product_id VARCHAR(50),
     seller_id VARCHAR(50) REFERENCES silver.sellers(seller_id),
     shipping_limit_date VARCHAR(50),
     price DECIMAL(10, 2),
