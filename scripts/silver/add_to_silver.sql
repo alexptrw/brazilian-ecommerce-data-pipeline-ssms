@@ -29,9 +29,11 @@ BEGIN
 END
 -- _________________________________________________________________
 DECLARE @start_time DATETIME, @end_time DATETIME, @layer_start_time DATETIME, @layer_end_time DATETIME
+
 PRINT '===============================';
 PRINT 'Load Silver Layer';
 PRINT '===============================';
+SET @layer_start_time = GETDATE()
 PRINT '>>Deleting orders_payments table'
 DELETE FROM silver.orders_payments;
 PRINT '>>Deleting order_items'
@@ -136,6 +138,25 @@ PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCH
 PRINT '-------------------------------';
 PRINT '===============================';
 
+PRINT '>>Start Loading sellers table'
+SET @start_time = GETDATE()
+INSERT INTO silver.sellers (
+	seller_id,
+    seller_zip_code_prefix,
+    seller_city,
+    seller_state)
+
+SELECT
+	seller_id,
+    CAST(seller_zip_code_prefix AS VARCHAR),
+    dbo.ProperCase(seller_city),
+    seller_state FROM bronze.sellers
+SET @end_time = GETDATE()
+PRINT '>> End loading sellers table';
+PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
+PRINT '-------------------------------';
+PRINT '===============================';
+
 PRINT '>>Start Loading order_items table'
 SET @start_time = GETDATE()
 INSERT INTO silver.order_items(
@@ -152,7 +173,7 @@ SELECT
     order_id, 
     product_id, 
     seller_id, 
-    CAST(shipping_limit_date AS DATETIME),
+    CAST(shipping_limit_date AS DATETIME2),
     price,
 	freight_value,
     SUM(freight_value) AS total_freight_value,
@@ -166,3 +187,6 @@ PRINT '>> End loading order_items table';
 PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
 PRINT '-------------------------------';
 PRINT '===============================';
+SET @layer_end_time = GETDATE()
+PRINT '>> End loading tables';
+PRINT 'Total time: ' + CAST(DATEDIFF(second, @layer_start_time,  @layer_end_time) as NVARCHAR)  + ' sec.'
