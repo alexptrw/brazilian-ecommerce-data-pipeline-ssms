@@ -49,7 +49,8 @@ CREATE TABLE silver.products (
     product_weight_g DECIMAL(10, 2),
     product_length_cm DECIMAL(10, 2),
     product_height_cm DECIMAL(10, 2),
-    product_width_cm DECIMAL(10, 2)
+    product_width_cm DECIMAL(10, 2),
+    days_from_purchase_to_delivery INT
 );
 GO
 
