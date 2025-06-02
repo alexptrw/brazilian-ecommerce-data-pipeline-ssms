@@ -45,7 +45,7 @@ GO
 CREATE TABLE silver.products (
     product_id VARCHAR(50) PRIMARY KEY,
     product_category_name VARCHAR(255),
-    product_photos_qty DECIMAL(10, 2),
+    product_photos_qty INT,
     product_weight_g DECIMAL(10, 2),
     product_length_cm DECIMAL(10, 2),
     product_height_cm DECIMAL(10, 2),
