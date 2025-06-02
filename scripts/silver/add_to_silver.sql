@@ -32,8 +32,20 @@ DECLARE @start_time DATETIME, @end_time DATETIME, @layer_start_time DATETIME, @l
 PRINT '===============================';
 PRINT 'Load Silver Layer';
 PRINT '===============================';
+PRINT '>>Deleting orders_payments table'
+DELETE FROM silver.orders_payments;
+PRINT '>>Deleting order_items'
+DELETE FROM silver.order_items;
+PRINT '>>Deleting orders'
+DELETE FROM silver.orders;
+PRINT '>>Deleting products'
+DELETE FROM silver.products;
+PRINT '>>Deleting sellers'
+DELETE FROM silver.sellers;
 PRINT '>>Deleting customer table'
 DELETE FROM silver.customer;
+
+
 PRINT '>>Start Loading customer table'
 SET @start_time = GETDATE()
 INSERT INTO silver.customer(
@@ -55,9 +67,6 @@ PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCH
 PRINT '-------------------------------';
 PRINT '===============================';
 
-
-PRINT '>>Deleting orders table'
-DELETE FROM silver.orders;
 PRINT '>>Start Loading orders table'
 SET @start_time = GETDATE()
 INSERT INTO silver.orders(order_id, 
@@ -98,8 +107,35 @@ PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCH
 PRINT '-------------------------------';
 PRINT '===============================';
 
-PRINT '>>Deleting order_items'
-DELETE FROM silver.order_items;
+PRINT '>>Start Loading products table'
+SET @start_time = GETDATE()
+INSERT INTO silver.products(product_id,
+    product_category_name,
+    product_photos_qty,
+    product_weight_g,
+    product_length_cm,
+    product_height_cm,
+    product_width_cm)
+SELECT product_id,
+CASE WHEN c.product_category_name_english = 'pc_gamer' THEN 'pc_gamer'
+	WHEN c.product_category_name_english = 'ortateis_cozinha_e_preparadores_de_alimentos' THEN 'kitchen_appliances_and_food_processors'
+	ELSE c.product_category_name_english
+	END AS english_name,
+CAST(product_photos_qty AS INT) as product_photos_qty,
+CAST(product_weight_g as DECIMAL(10, 2)) as product_weight_g,
+CAST(product_length_cm as DECIMAL(10, 2)) as product_length_cm,
+CAST(product_height_cm as DECIMAL(10, 2)) as product_height_cm,
+CAST(product_width_cm as DECIMAL(10, 2)) as product_width_cm
+FROM bronze.products p
+LEFT JOIN bronze.category_name_transactions c 
+    ON c.product_category_name = p.product_category_name
+WHERE p.product_category_name is NOT NULL;
+SET @end_time = GETDATE()
+PRINT '>> End loading products table';
+PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
+PRINT '-------------------------------';
+PRINT '===============================';
+
 PRINT '>>Start Loading order_items table'
 SET @start_time = GETDATE()
 INSERT INTO silver.order_items(
@@ -118,13 +154,14 @@ SELECT
     seller_id, 
     CAST(shipping_limit_date AS DATETIME),
     price,
-    freight_value,
+	freight_value,
     SUM(freight_value) AS total_freight_value,
     COUNT(*) AS quantity,
-    price * COUNT(*) as total_price
+	price * COUNT(*) as total_price
 FROM bronze.order_items
 GROUP BY 
     order_id, product_id, seller_id, shipping_limit_date, price, freight_value; 
+SET @end_time = GETDATE()
 PRINT '>> End loading order_items table';
 PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
 PRINT '-------------------------------';
