@@ -1,1 +1,70 @@
 
+DECLARE @start_time DATETIME, @end_time DATETIME, @layer_start_time DATETIME, @layer_end_time DATETIME
+PRINT '===============================';
+PRINT 'Load Silver Layer';
+PRINT '===============================';
+PRINT '>>Deleting customer table'
+DELETE FROM silver.customer;
+PRINT '>>Start Loading customer table'
+SET @start_time = GETDATE()
+INSERT INTO silver.customer(
+customer_id, 
+customer_unique_id, 
+customer_zip_code_prefix, 
+customer_city, 
+customer_state)
+
+SELECT customer_id, 
+customer_unique_id, 
+CAST(customer_zip_code_prefix AS varchar) as customer_zip_code_prefix, 
+dbo.ProperCase(customer_city) as customer_city, 
+CAST(customer_state as CHAR) as customer_state
+FROM bronze.customers
+SET @end_time = GETDATE()
+PRINT '>> End loading customer table';
+PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
+PRINT '-------------------------------';
+PRINT '===============================';
+
+
+PRINT '>>Deleting orders table'
+DELETE FROM silver.orders;
+PRINT '>>Start Loading orders table'
+SET @start_time = GETDATE()
+INSERT INTO silver.orders(order_id, 
+customer_id,
+order_status,
+order_purchase_timestamp,
+order_approved_at,
+order_delivered_carrier_date,
+order_delivered_customer_date,
+order_estimated_delivery_date,
+days_from_purchase_to_delivery)
+
+SELECT order_id, 
+customer_id,
+order_status,
+order_purchase_timestamp, 
+CASE 
+WHEN order_approved_at  IS NULL and  order_status = 'delivered' THEN order_purchase_timestamp
+	ELSE order_approved_at
+	END as order_approved_at,
+CASE 
+	WHEN order_delivered_carrier_date < order_purchase_timestamp THEN DATEADD(HOUR, 1, order_purchase_timestamp)
+	WHEN order_delivered_carrier_date IS NULL and order_delivered_customer_date IS NOT NULL THEN order_delivered_customer_date
+	WHEN order_delivered_carrier_date IS NULL and order_delivered_customer_date IS NULL THEN order_estimated_delivery_date
+	ELSE order_delivered_carrier_date
+END as order_delivered_carrier_date,
+CASE 
+	WHEN order_delivered_customer_date IS NULL and order_status = 'delivered'THEN order_estimated_delivery_date
+	ELSE order_delivered_customer_date
+	END as order_delivered_customer_date,
+order_estimated_delivery_date,
+DATEDIFF(DAY, order_purchase_timestamp, order_estimated_delivery_date) as days_from_purchase_to_delivery
+FROM  bronze.orders
+WHERE NOT (order_approved_at IS NULL AND order_status = 'created')
+SET @end_time = GETDATE()
+PRINT '>> End loading orders table';
+PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
+PRINT '-------------------------------';
+PRINT '===============================';
