@@ -97,3 +97,35 @@ PRINT '>> End loading orders table';
 PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
 PRINT '-------------------------------';
 PRINT '===============================';
+
+PRINT '>>Deleting order_items'
+DELETE FROM silver.order_items;
+PRINT '>>Start Loading order_items table'
+SET @start_time = GETDATE()
+INSERT INTO silver.order_items(
+    order_id ,
+    product_id,
+    seller_id,
+    shipping_limit_date,
+    price,
+    freight_value,
+	total_freight_value,
+	quantity,
+	total_price) 
+SELECT 
+    order_id, 
+    product_id, 
+    seller_id, 
+    CAST(shipping_limit_date AS DATETIME),
+    price,
+    freight_value,
+    SUM(freight_value) AS total_freight_value,
+    COUNT(*) AS quantity,
+    price * COUNT(*) as total_price
+FROM bronze.order_items
+GROUP BY 
+    order_id, product_id, seller_id, shipping_limit_date, price, freight_value; 
+PRINT '>> End loading order_items table';
+PRINT 'Time to load: ' + CAST(DATEDIFF(second, @start_time, @end_time) as NVARCHAR) + ' sec.'
+PRINT '-------------------------------';
+PRINT '===============================';
