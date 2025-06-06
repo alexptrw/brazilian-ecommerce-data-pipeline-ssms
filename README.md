@@ -13,7 +13,7 @@ This project is a hands-on learning initiative focused on building a modern data
   - Python 3.13.1 - Pandas 2.2.3
   - SQL Server Management Studio (SSMS)
   - https://draw.io/ for diagrams
-  - https://www.notion.so/ Planning and progress tracking
+  - Planning and progress tracking https://www.notion.so/ELT-Project-2024a269255a80f3a8a9fe6aaa773afa 
   - Github
 
 #🏗️ Data Architecture (Medallion)
