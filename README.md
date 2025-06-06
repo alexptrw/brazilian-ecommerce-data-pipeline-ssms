@@ -4,7 +4,7 @@ This project is a hands-on learning initiative focused on building a modern data
 
 #🗂️ Data Source 
 
- Brazilian E-Commerce Public Dataset by Olist:
+ ##Brazilian E-Commerce Public Dataset by Olist:
  
     https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce?select=product_category_name_translation.csv
 
@@ -17,7 +17,8 @@ This project is a hands-on learning initiative focused on building a modern data
   - Github
 
 #🏗️ Data Architecture (Medallion)
-!(diagrams/layers_schema.jpg)
+
+![Image](https://github.com/user-attachments/assets/1ec36152-d73b-4b29-ba47-fbccc46b23ae)
 
 
 #📊 Project Workflow
