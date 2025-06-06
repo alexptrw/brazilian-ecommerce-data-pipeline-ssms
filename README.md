@@ -1,4 +1,4 @@
-#📦Ecommerce-data-pipeline-ssms Project
+#📦Ecommerce Data Pipeline Project
 
 This project is a hands-on learning initiative focused on building a modern data warehouse using Pandas and T-SQL. Its goal is to progressively expand my expertise in essential data concepts, including ELT workflows, DataFrame operations, data architecture design, and analytical methodologies.
 
@@ -20,8 +20,11 @@ This project is a hands-on learning initiative focused on building a modern data
 
 ![Image](https://github.com/user-attachments/assets/1ec36152-d73b-4b29-ba47-fbccc46b23ae)
 
+The Medallion Architecture organizes data into three layers for improved data quality and usability:
 
-#📊 Project Workflow
+  - Bronze: Raw ingested data from kaggle dataset.
+  - Silver: Cleaned, transformed and enriched data.
+  - Gold: Aggregated, business-level data ready for analytics and reporting.
 
 #👋 About Me
 
