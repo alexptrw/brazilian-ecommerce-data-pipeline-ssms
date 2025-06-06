@@ -17,6 +17,8 @@ This project is a hands-on learning initiative focused on building a modern data
   - Github
 
 #🏗️ Data Architecture (Medallion)
+!(diagrams/layers_schema.jpg)
+
 
 #📊 Project Workflow
 
