@@ -1,37 +1,40 @@
-IF OBJECT_ID('gold.DimCustomer', 'U') IS NOT NULL
-	DROP TABLE gold.DimCustomer
-CREATE TABLE gold.DimCustomer (
-    customer_id VARCHAR(50) PRIMARY KEY,
-    city VARCHAR(100),
-    state CHAR(2)
-);
+CREATE OR ALTER VIEW gold.dim_customer AS
+SELECT
+    customer_id,
+    customer_city AS city,
+    customer_state AS state
+FROM silver.customer;
 
-IF OBJECT_ID('gold.DimProduct', 'U') IS NOT NULL
-CREATE TABLE gold.DimProduct (
-    product_id VARCHAR(50) PRIMARY KEY,
-    category_name VARCHAR(255)
-);
+GO
+CREATE OR ALTER VIEW gold.dim_Product AS
+SELECT
+    product_id,
+    product_category_name AS category_name
+FROM silver.products;
 
-IF OBJECT_ID('gold.FactOrders', 'U') IS NOT NULL
-CREATE TABLE gold.FactOrders (
-    order_id VARCHAR(50) PRIMARY KEY,
-    customer_id VARCHAR(50),
-    order_date DATETIME,
-    order_status VARCHAR(50),
-    total_order_value DECIMAL(18, 2),
-    total_freight_value DECIMAL(18, 2),
-    days_from_purchase_to_delivery INT,
-    FOREIGN KEY (customer_id) REFERENCES gold.DimCustomer(customer_id)
-);
+GO
 
-IF OBJECT_ID('gold.FactOrderItems', 'U') IS NOT NULL
-CREATE TABLE gold.FactOrderItems (
-    order_item_id INT IDENTITY(1,1) PRIMARY KEY,
-    order_id VARCHAR(50),
-    product_id VARCHAR(50),
-    quantity INT,
-    unit_price DECIMAL(10, 2),
-    total_price DECIMAL(18, 2),
-    FOREIGN KEY (order_id) REFERENCES gold.FactOrders(order_id),
-    FOREIGN KEY (product_id) REFERENCES gold.DimProduct(product_id)
-);
+CREATE OR ALTER VIEW gold.fact_orders AS
+SELECT
+    o.order_id,
+    o.customer_id,
+    o.order_purchase_timestamp AS order_date,
+    o.order_status,
+    SUM(oi.total_price) AS total_order_value,
+    SUM(oi.total_freight_value) AS total_freight_value,
+    o.days_from_purchase_to_delivery
+FROM silver.orders o
+LEFT JOIN silver.order_items oi
+    ON o.order_id = oi.order_id
+GROUP BY
+    o.order_id, o.customer_id, o.order_purchase_timestamp, o.order_status, o.days_from_purchase_to_delivery;
+
+GO
+CREATE OR ALTER VIEW gold.fact_order_items AS
+SELECT
+    order_id,
+    product_id,
+    quantity,
+    price AS unit_price,
+    total_price
+FROM silver.order_items;
